@@ -71,7 +71,7 @@ public class Pizza {
 
   public int eatSlice(int numberOfSlices) {
     System.out.println("You have eaten " + numberOfSlices + " slice of " + Arrays.toString(this.toppings) + " pizza");
-    this.slices = this.slices -= numberOfSlices;
+    this.slices = this.slices - numberOfSlices;
     return this.slices;
   }
 
