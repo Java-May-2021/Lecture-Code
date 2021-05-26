@@ -1,0 +1,42 @@
+package com.matthew.dogs.services;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.matthew.dogs.models.Dog;
+import com.matthew.dogs.repositories.DogRepository;
+
+@Service
+public class DogService {
+	private final DogRepository dRepo;
+	
+	public DogService(DogRepository repo) {
+		this.dRepo = repo;
+	}
+	
+	// Display All Dogs
+	public List<Dog> getAllDogs(){
+		return this.dRepo.findAll();
+	}
+	
+	// Display One Dog
+	public Dog getSingleDog(Long id) {
+		return this.dRepo.findById(id).orElse(null);
+	}
+	
+	// Create Dog
+	public Dog createDog(Dog dog) {
+		return this.dRepo.save(dog);
+	}
+	
+	// Delete Dog
+	public void deleteDog(Long id) {
+		this.dRepo.deleteById(id);
+	}
+	
+	// Update Dog
+	public Dog updateDog(Dog dog) {
+		return this.dRepo.save(dog);
+	}
+}
