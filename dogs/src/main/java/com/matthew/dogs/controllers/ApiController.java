@@ -8,17 +8,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.matthew.dogs.models.Dog;
 import com.matthew.dogs.services.DogService;
 
 @RestController
-public class MainController {
+@RequestMapping("/api")
+public class ApiController {
 	@Autowired
 	private DogService dService;
 	
-	@GetMapping("/")
+	@GetMapping("")
 	public List<Dog> getDogs(){
 		return this.dService.getAllDogs();
 	}

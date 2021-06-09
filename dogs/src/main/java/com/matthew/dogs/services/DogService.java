@@ -30,6 +30,12 @@ public class DogService {
 		return this.dRepo.save(dog);
 	}
 	
+	//Create Dog Manual Way
+	public Dog createDogTwo(String name, String breed, int age) {
+		Dog newDog = new Dog(name, breed, age);
+		return this.dRepo.save(newDog);
+	}
+	
 	// Delete Dog
 	public void deleteDog(Long id) {
 		this.dRepo.deleteById(id);
