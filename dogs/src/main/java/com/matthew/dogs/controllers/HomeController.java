@@ -2,6 +2,7 @@ package com.matthew.dogs.controllers;
 
 import java.util.ArrayList;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +18,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.matthew.dogs.models.Dog;
 import com.matthew.dogs.models.Tag;
+import com.matthew.dogs.models.User;
 import com.matthew.dogs.services.DogService;
 import com.matthew.dogs.services.TagService;
+import com.matthew.dogs.services.UserService;
 
 @Controller
 public class HomeController {
@@ -26,18 +29,57 @@ public class HomeController {
 	private DogService dService;
 	@Autowired
 	private TagService tService;
+	@Autowired
+	private UserService uService;
 	
 	@GetMapping("/")
-	public String dashboard(Model viewModel) {
+	public String index(Model viewModel) {
+		viewModel.addAttribute("users", this.uService.getAllUsers());
+		return "landing.jsp";
+	}
+	
+	@PostMapping("/login")
+	public String login(@RequestParam("thisUser") Long userId, HttpSession session) {
+		session.setAttribute("user__id", userId);
+		return "redirect:/dogs";
+
+		
+	}
+	
+	@GetMapping("/logout")
+	public String logout(HttpSession session) {
+		session.invalidate();
+		return "redirect:/";
+	}
+	@GetMapping("/dogs")
+	public String dashboard(Model viewModel, HttpSession session) {
 		viewModel.addAttribute("allDogs", this.dService.getAllDogs());
+		viewModel.addAttribute("user", this.uService.getSingleUser((Long)session.getAttribute("user__id")));
 		return "dashboard.jsp";
 	}
+	
 	
 	@GetMapping("/show/{id}")
 	public String show(@PathVariable("id") Long id, Model viewModel, @ModelAttribute("tag") Tag tag) {
 		Dog dogToShow = this.dService.getSingleDog(id);
 		viewModel.addAttribute("dog", dogToShow);
 		return "show.jsp";
+	}
+	
+	@GetMapping("/like/{id}")
+	public String like(@PathVariable("id") Long id, HttpSession session) {
+		Dog dogThatsLiked = this.dService.getSingleDog(id);
+		User personWhoLiked = this.uService.getSingleUser((Long)session.getAttribute("user__id"));
+		this.uService.likeDog(personWhoLiked, dogThatsLiked);
+		return "redirect:/dogs";
+	}
+	
+	@GetMapping("/unlike/{id}")
+	public String unlike(@PathVariable("id") Long id, HttpSession session) {
+		Dog dogThatsLiked = this.dService.getSingleDog(id);
+		User personWhoLiked = this.uService.getSingleUser((Long)session.getAttribute("user__id"));
+		this.uService.unlikeDog(personWhoLiked, dogThatsLiked);
+		return "redirect:/dogs";
 	}
 	
 	@PostMapping("/tag/{id}")
